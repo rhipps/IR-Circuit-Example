@@ -4,14 +4,14 @@ int RECV_PIN = 11; // define input pin on Arduino
 IRrecv irrecv(RECV_PIN);  // decode_results class is defined in IRremote.h
 
 constexpr long remoteButtons[] = {
-  16738455, 
-  16724175, 
-  16718055, 
-  16753245
+  16738455, //Zero Button
+  16724175, //One Button
+  16718055, //Two Button
+  16753245  //Power Button
 };
 
 typedef struct LED {
-  int pin;
+  int outPin;
   bool isOn;
 } LED;
 
@@ -22,17 +22,20 @@ LED BLUE_LED = {10, false };
 void setup() { 
   Serial.begin(9600); 
   irrecv.enableIRIn(); // Start the receiver 
-  pinMode(GREEN_LED.pin, OUTPUT);
-  pinMode(RED_LED.pin, OUTPUT);
-  pinMode(BLUE_LED.pin, OUTPUT);
+  
+  //Setup the LED output pins
+  pinMode(GREEN_LED.outPin, OUTPUT);
+  pinMode(RED_LED.outPin, OUTPUT);
+  pinMode(BLUE_LED.outPin, OUTPUT);
 } 
 
+//Check if the LED is on or off and toggle it
 void toggleLed(LED *led) {
   if (led->isOn){
-    digitalWrite(led->pin, LOW);
+    digitalWrite(led->outPin, LOW);
     Serial.println("OFF");
   } else {
-    digitalWrite(led->pin, HIGH);
+    digitalWrite(led->outPin, HIGH);
     Serial.println("ON");
   }
   led->isOn = !(led->isOn);
@@ -45,6 +48,7 @@ void turnOffLed(LED *led) {
 
 void loop() { 
   if (irrecv.decode()) {
+    
     irrecv.printIRResultShort(&Serial);
     
     switch(irrecv.results.value){
@@ -69,7 +73,7 @@ void loop() {
       default:
         Serial.println(irrecv.getProtocolString());
         Serial.println(irrecv.results.value);
-        Serial.println("idk what key that was");
+        Serial.println("Not a registered button");
     }
     Serial.println(); 
     
