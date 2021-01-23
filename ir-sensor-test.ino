@@ -42,7 +42,7 @@ void toggleLed(LED *led) {
 }
 
 void turnOffLed(LED *led) {
-  digitalWrite(led->pin, LOW);
+  digitalWrite(led->outPin, LOW);
   led->isOn = false;
 }
 
